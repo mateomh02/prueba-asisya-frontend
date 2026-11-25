@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-purple-50: #f4eef9;
+  --color-brand-purple-100: #e6d9f2;
+  --color-brand-purple-600: #6a2c91;
+  --color-brand-purple-700: #53207a;
+  --color-brand-purple-900: #2e1243;
+
+  --color-brand-magenta-50: #fceaf2;
+  --color-brand-magenta-600: #c81d6e;
+  --color-brand-magenta-900: #6e0f3b;
+
+  --color-brand-coral-50: #fdecea;
+  --color-brand-coral-500: #ef4a3c;
+  --color-brand-coral-700: #b8301f;
+
+  --color-brand-blue-50: #e8f6fd;
+  --color-brand-blue-500: #2a9fd8;
+  --color-brand-blue-900: #0f4c6b;
+
+  --color-ink-900: #1f1a2e;
+  --color-ink-600: #6b6375;
+  --color-ink-200: #e5e4e7;
+
+  --color-primary: var(--color-brand-purple-600);
+  --color-primary-hover: var(--color-brand-purple-700);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--color-brand-magenta-600);
+  --color-secondary-foreground: #ffffff;
+  --color-accent: var(--color-brand-coral-500);
+  --color-info: var(--color-brand-blue-500);
+  --color-muted: var(--color-brand-purple-50);
+  --color-muted-foreground: var(--color-ink-600);
+  --color-foreground: var(--color-ink-900);
+  --color-background: #ffffff;
+  --color-border: var(--color-ink-200);
+  --color-ring: var(--color-brand-purple-600);
+  --color-destructive: var(--color-brand-coral-700);
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1.25rem;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
