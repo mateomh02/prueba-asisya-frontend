@@ -9,3 +9,5 @@ export const SERVICES_MSGS = {
   ERROR: 'Ocurrió un error. Inténtelo nuevamente.',
   INVALID_CREDENTIALS: 'Usuario o contraseña incorrectos.'
 }
+
+export const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50]

@@ -6,6 +6,7 @@ import { isAxiosError } from 'axios'
 import { toast } from 'react-toastify'
 import { SERVICES_MSGS } from '@/modules/core'
 import { useAuthStore } from '@/modules/app/auth'
+import { getRoutes } from '@/modules/app/routes'
 import { loginSchema, type LoginFormValues } from './login-schema'
 import { login } from './login-service'
 
@@ -13,6 +14,7 @@ export const useLoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const setSession = useAuthStore((s) => s.setSession)
+  const setRoutes = useAuthStore((s) => s.setRoutes)
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -28,6 +30,7 @@ export const useLoginForm = () => {
         role: response.role,
         roleId: response.roleId
       })
+      setRoutes(await getRoutes())
       navigate('/products')
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 401) {

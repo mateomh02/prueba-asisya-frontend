@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { AppRoute } from '@/modules/app/routes/route-types'
 
 export interface AuthUser {
   email: string
@@ -10,7 +11,9 @@ export interface AuthUser {
 interface AuthState {
   token: string | null
   user: AuthUser | null
+  routes: AppRoute[]
   setSession: (token: string, user: AuthUser) => void
+  setRoutes: (routes: AppRoute[]) => void
   logout: () => void
 }
 
@@ -19,8 +22,10 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       token: null,
       user: null,
+      routes: [],
       setSession: (token, user) => set({ token, user }),
-      logout: () => set({ token: null, user: null })
+      setRoutes: (routes) => set({ routes }),
+      logout: () => set({ token: null, user: null, routes: [] })
     }),
     { name: 'auth' }
   )
