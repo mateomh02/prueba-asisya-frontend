@@ -9,6 +9,14 @@ export interface Product {
   source: string
 }
 
+export interface ProductDetail extends Product {
+  categoryPicture: string | null
+  supplierId: number | null
+  quantityPerUnit: string | null
+  unitsOnOrder: number
+  reorderLevel: number
+}
+
 export interface PagedResult<T> {
   items: T[]
   total: number

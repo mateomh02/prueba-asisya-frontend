@@ -1,11 +1,26 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useSWRConfig } from 'swr'
+import { toast } from 'react-toastify'
+import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { Button } from '@/modules/core'
+import { getApiErrorMessage } from '@/modules/core/lib/api-error'
 import { Table, TableBody, TableCell, TableEmpty, TableHeader, TablePagination, TableRow, TableFilters } from '@/modules/core/components/table'
+import { useRole } from '@/modules/app/auth'
 import { useProducts } from './use-products'
+import { deleteProduct } from './product-service'
+import { isProductsKey } from './use-product-form'
+import type { Product } from './product-types'
 
 const money = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 })
 
-const headerCellTitles = ['Nombre', 'Categoría', 'Precio', 'Stock', 'Origen', 'Estado']
+const baseHeaderCellTitles = ['Nombre', 'Categoría', 'Precio', 'Stock', 'Origen', 'Estado']
 
 export const ProductTable = () => {
+  const { isAdmin } = useRole()
+  const { mutate } = useSWRConfig()
+  const [deletingId, setDeletingId] = useState<number | null>(null)
+  const headerCellTitles = isAdmin ? [...baseHeaderCellTitles, 'Acciones'] : baseHeaderCellTitles
   const {
     products,
     total,
@@ -25,13 +40,36 @@ export const ProductTable = () => {
     clearFilters
   } = useProducts()
 
+  const handleDelete = async (product: Product) => {
+    if (!window.confirm(`¿Eliminar el producto "${product.productName}"? Esta acción no se puede deshacer.`)) return
+    setDeletingId(product.id)
+    try {
+      await deleteProduct(product.id)
+      await mutate(isProductsKey)
+      toast.success('Producto eliminado correctamente')
+    } catch (err) {
+      toast.error(getApiErrorMessage(err))
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   if (error) return <p className='text-destructive'>No se pudieron cargar los productos.</p>
 
   return (
     <section className='grid gap-4'>
-      <div>
-        <h1 className='text-2xl font-black text-foreground'>Productos</h1>
-        <p className='text-sm text-muted-foreground'>{total} productos registrados</p>
+      <div className='flex flex-wrap items-end justify-between gap-4'>
+        <div>
+          <h1 className='text-2xl font-black text-foreground'>Productos</h1>
+          <p className='text-sm text-muted-foreground'>{total} productos registrados</p>
+        </div>
+        {isAdmin && (
+          <Button asChild>
+            <Link to='/products/new'>
+              <Plus /> Nuevo producto
+            </Link>
+          </Button>
+        )}
       </div>
 
       <TableFilters
@@ -73,6 +111,27 @@ export const ProductTable = () => {
                   {p.discontinued ? 'Descontinuado' : 'Activo'}
                 </span>
               </TableCell>
+              {isAdmin && (
+                <TableCell>
+                  <div className='flex items-center gap-2'>
+                    <Button asChild variant='outline' size='icon' aria-label='Editar producto'>
+                      <Link to={`/products/${p.id}/edit`}>
+                        <Pencil />
+                      </Link>
+                    </Button>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      aria-label='Eliminar producto'
+                      disabled={deletingId === p.id}
+                      onClick={() => handleDelete(p)}
+                      className='text-brand-coral-700 hover:bg-brand-coral-50'
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

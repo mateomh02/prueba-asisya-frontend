@@ -31,7 +31,7 @@ export const useLoginForm = () => {
         roleId: response.roleId
       })
       setRoutes(await getRoutes())
-      navigate('/products')
+      navigate('/')
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 401) {
         toast.warn(SERVICES_MSGS.INVALID_CREDENTIALS)
